@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Systemic Risk: Interactive Study Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f5f7;--panel:#fff;--ink:#14213a;--muted:#667189;--line:#dde1e8;--accent:#1e3a5f;--brass:#a8844a;--alert:#9e2b3a;--warn:#b98a2e;--ok:#2b7a67;--soft:#eceff4;--shadow:0 1px 2px rgba(20,33,58,.04),0 12px 32px -12px rgba(20,33,58,.14)}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1829;--panel:#13223a;--ink:#e8ebf2;--muted:#9aa6bd;--line:#25354f;--accent:#7f9fd0;--brass:#c9a86a;--alert:#e0707f;--warn:#e0b25c;--ok:#5cc4a8;--soft:#1a2c48;--shadow:0 1px 2px rgba(0,0,0,.3),0 12px 32px -12px rgba(0,0,0,.5)}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 "Hanken Grotesk",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Cormorant Garamond",Georgia,serif;line-height:1.15;margin:0 0 .5em;font-weight:600;letter-spacing:-.01em}
+h2{font-size:clamp(2.2rem,4vw,3.2rem);font-weight:500;padding-bottom:.35em;margin-bottom:.45em;border-bottom:1px solid var(--line);position:relative}
+h2::after{content:"";position:absolute;left:0;bottom:-1px;width:72px;height:2px;background:var(--brass)}
+h3{font-size:1.55rem;margin-top:2em}
+.shell{display:grid;grid-template-columns:300px 1fr;min-height:100vh}
+nav{position:sticky;top:0;height:100vh;padding:44px 26px;background:linear-gradient(180deg,#0b1830,#0f2142);color:#e8ebf2;overflow:auto}
+nav h1{font-size:2.1rem;font-weight:500;color:#fff;margin:0;padding-bottom:16px;border-bottom:1px solid rgba(201,168,106,.5)}
+nav p{color:#a9b5cc;font-size:.82rem;margin:14px 0 36px;letter-spacing:.04em}
+nav button{display:block;width:100%;text-align:left;background:none;border:0;border-left:1px solid rgba(255,255,255,.14);padding:14px 16px;margin:0;color:#a9b5cc;font:inherit;font-size:.95rem;line-height:1.35;cursor:pointer;transition:color .2s,background .2s,border-color .2s}
+nav button:hover{color:#fff;background:rgba(255,255,255,.04)}
+nav button[aria-current=true]{color:#fff;border-left:2px solid #c9a86a;background:rgba(201,168,106,.08);font-weight:600}
+nav .done::after{content:" ✓";color:#7fd6bd}
+main{padding:56px clamp(20px,6vw,88px) 96px;max-width:1040px}
+section{display:none}
+section.on{display:block;animation:rise .5s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.lead{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.5rem;line-height:1.5;color:var(--muted);max-width:50ch;margin:0 0 1.5em}
+p,li{max-width:68ch}
+li{margin-bottom:.5em}
+b{font-weight:600}
+.lab{background:var(--panel);border:1px solid var(--line);border-top:2px solid var(--brass);border-radius:3px;padding:32px 34px;margin:32px 0;box-shadow:var(--shadow)}
+.lab h3{margin-top:0;font-size:1.7rem}
+.row{display:grid;grid-template-columns:210px 1fr 64px;gap:16px;align-items:center;margin:14px 0;font-size:.93rem}
+.row output{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:var(--accent)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:20px;background:transparent;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--line)}
+input[type=range]::-moz-range-track{height:2px;background:var(--line)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;margin-top:-7px;border-radius:50%;background:var(--panel);border:2px solid var(--brass);box-shadow:0 2px 6px rgba(20,33,58,.25);transition:transform .15s}
+input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:var(--panel);border:2px solid var(--brass)}
+input[type=range]:hover::-webkit-slider-thumb{transform:scale(1.2)}
+.meter{height:5px;background:var(--soft);border-radius:3px;overflow:hidden;margin:6px 0 12px}
+.meter i{display:block;height:100%;border-radius:3px;transition:width .35s cubic-bezier(.2,.7,.2,1),background .3s}
+.big{font-family:"Cormorant Garamond",serif;font-size:5rem;font-weight:500;line-height:1;margin-top:10px;font-variant-numeric:lining-nums}
+.cols{display:grid;grid-template-columns:1.1fr 1fr;gap:34px;align-items:center}
+.stat{display:flex;gap:0;flex-wrap:wrap;margin-top:18px;border-top:1px solid var(--line)}
+.stat div{flex:1;min-width:120px;padding:14px 18px 4px 0;margin-right:18px}
+.stat small{display:block;color:var(--muted);font-size:.8rem;line-height:1.3;margin-bottom:2px}
+.stat b{font-family:"Cormorant Garamond",serif;font-size:2.1rem;font-weight:600;font-variant-numeric:lining-nums tabular-nums}
+.note{color:var(--muted);font-size:.9rem}
+table{border-collapse:collapse;width:100%;font-size:.93rem;margin:18px 0;background:var(--panel);box-shadow:var(--shadow);border-radius:3px}
+th{font-weight:600;color:var(--accent);border-bottom:2px solid var(--brass)}
+th,td{padding:13px 16px;text-align:left;vertical-align:top}
+td{border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:600;white-space:nowrap}
+.btn{background:transparent;color:var(--accent);border:1px solid var(--brass);border-radius:2px;padding:9px 22px;font:inherit;font-size:.9rem;cursor:pointer;transition:background .2s,color .2s}
+.btn:hover{background:var(--brass);color:#fff}
+.quiz{margin-top:64px;padding:32px 34px;background:linear-gradient(180deg,var(--soft),transparent);border-left:2px solid var(--brass);border-radius:0 3px 3px 0}
+.quiz h3{margin-top:0}
+.q{margin:26px 0}.q p{font-weight:600;margin:0 0 10px}
+.q label{display:block;padding:11px 16px;border:1px solid var(--line);border-radius:2px;margin:7px 0;cursor:pointer;background:var(--panel);transition:border-color .2s,transform .2s}
+.q label:hover{border-color:var(--brass);transform:translateX(3px)}
+.q input{accent-color:var(--brass);margin-right:8px}
+.q .fb{font-size:.9rem;margin-top:8px;min-height:1.2em}
+.q .good{color:var(--ok)}.q .bad{color:var(--alert)}
+svg text{fill:var(--ink);font:600 12px "Hanken Grotesk",sans-serif}
+button:focus-visible,input:focus-visible,g:focus-visible,label:focus-within{outline:2px solid var(--brass);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){section.on{animation:none}*{transition:none!important}}
+@media(max-width:860px){
+.shell{display:block}
+nav{position:static;height:auto;display:flex;gap:4px;overflow-x:auto;padding:14px}
+nav h1,nav p{display:none}
+nav button{white-space:nowrap;width:auto;border-left:0;border-bottom:2px solid transparent;padding:10px 14px}
+nav button[aria-current=true]{border-left:0;border-bottom-color:#c9a86a}
+main{padding-top:36px}
+.row{grid-template-columns:1fr 56px}.row label{grid-column:1/-1}
+.cols{grid-template-columns:1fr}.lab,.quiz{padding:24px 20px}.big{font-size:4rem}
+table{display:block;overflow-x:auto}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav aria-label="Lessons">
+<h1>Systemic Risk</h1>
+<p>Risk Management — Module 1</p>
+<button data-t="0">1. Macroeconomic indicators</button>
+<button data-t="1">2. Networks and principal components</button>
+<button data-t="2">3. Conditional and illiquidity risk</button>
+<button data-t="3">4. Systemic risk meets machine learning</button>
+</nav>
+<main>
+
+<!-- LESSON 1 -->
+<section>
+<h2>Lesson 1: Macroeconomic indicators</h2>
+<p class="lead">Systemic risk is the chance that distress in one part of the financial system spreads and damages the real economy. Macro indicators are the slow-moving early-warning signals that tell you when the system is becoming fragile.</p>
+<h3>The core indicators</h3>
+<table>
+<tr><th>Indicator</th><th>What it measures</th><th>Warning sign</th></tr>
+<tr><td>Credit-to-GDP gap</td><td>Private credit relative to its long-run trend (used by the BIS and the Basel countercyclical buffer)</td><td>Gap above about 10 percentage points</td></tr>
+<tr><td>Yield curve slope</td><td>10-year minus 2-year government yield</td><td>Inversion (negative slope) often precedes recessions</td></tr>
+<tr><td>Unemployment change</td><td>12-month change in the jobless rate</td><td>Sharp rises signal weakening credit quality</td></tr>
+<tr><td>House price growth</td><td>Year-on-year change in real property prices</td><td>Booms build collateral bubbles</td></tr>
+<tr><td>VIX</td><td>Implied equity volatility</td><td>Spikes reflect fear and falling risk appetite</td></tr>
+</table>
+<p>No single indicator is reliable. Credit and asset-price booms tend to build before a crisis, while market-based measures such as volatility react once stress has started. Good monitoring combines both.</p>
+<div class="lab">
+<h3>Early-warning dashboard</h3>
+<p class="note">Move the sliders to build a scenario. The score is a simplified, illustrative weighting, not a calibrated model.</p>
+<div id="macro"></div>
+<div class="big" id="mScore">0</div>
+<div class="meter"><i id="mBar"></i></div>
+<div id="mLabel" style="font-weight:600"></div>
+<div id="mBars" style="margin-top:14px"></div>
+</div>
+<div class="quiz" data-l="0"></div>
+</section>
+
+<!-- LESSON 2 -->
+<section>
+<h2>Lesson 2: Networks and principal components</h2>
+<p class="lead">Institutions are linked by loans, derivatives and shared holdings. Two lenses help: networks show who is exposed to whom, and principal component analysis (PCA) shows how much of the system moves together.</p>
+<h3>Network contagion</h3>
+<p>In a network, each bank is a node and each exposure is a directed link. When a borrower fails, its lenders lose the exposed amount. If that loss exceeds a lender’s capital, the lender fails too, and the shock propagates. Highly connected nodes and thin capital buffers make cascades more likely.</p>
+<div class="lab">
+<h3>Contagion simulator</h3>
+<p class="note">Click a bank to make it fail. Arrows point from lender to borrower, and the number is the exposure.</p>
+<div class="cols">
+<svg id="net" viewBox="0 0 300 290" role="img" aria-label="Interbank network"></svg>
+<div>
+<div class="row" style="grid-template-columns:1fr 1fr 40px"><label for="cap">Capital per bank</label><input id="cap" type="range" min="2" max="14" value="7"><output id="capO"></output></div>
+<div class="stat"><div><small>Failed banks</small><b id="nFail">0</b></div><div><small>Rounds</small><b id="nRound">0</b></div></div>
+<p id="netMsg" class="note"></p>
+<button class="btn alt" id="netReset">Reset</button>
+</div></div>
+</div>
+<h3>Principal components and the absorption ratio</h3>
+<p>PCA decomposes a covariance matrix into factors. The <b>absorption ratio</b> is the share of total variance explained by the first few principal components. When it rises, assets are moving together, diversification is weakening, and shocks spread faster.</p>
+<div class="lab">
+<h3>Absorption ratio for 10 assets</h3>
+<p class="note">All assets share the same pairwise correlation ρ. The first eigenvalue is 1 + 9ρ, and each of the other nine is 1 − ρ.</p>
+<div class="row"><label for="rho">Average correlation ρ</label><input id="rho" type="range" min="0" max="0.95" step="0.05" value="0.3"><output id="rhoO"></output></div>
+<svg id="pca" viewBox="0 0 400 130" role="img" aria-label="Eigenvalue shares" style="width:100%;max-width:520px"></svg>
+<div class="stat"><div><small>PC1 share</small><b id="pc1"></b></div><div><small>Effective diversification</small><b id="effN"></b></div></div>
+</div>
+<div class="quiz" data-l="1"></div>
+</section>
+
+<!-- LESSON 3 -->
+<section>
+<h2>Lesson 3: Conditional and illiquidity risk</h2>
+<p class="lead">Ordinary VaR looks at a firm in isolation. Conditional measures ask a different question: how bad is the system when this firm is in trouble, and how bad is this firm when the system is in trouble?</p>
+<h3>The key measures</h3>
+<ul>
+<li><b>CoVaR</b>: the value-at-risk of the financial system, conditional on one institution being at its own VaR. <b>ΔCoVaR</b> is that figure minus the system’s VaR when the institution is at its median state. It captures the institution’s contribution to systemic risk.</li>
+<li><b>MES (marginal expected shortfall)</b>: the institution’s expected loss on days when the system is in its worst tail. It captures exposure to systemic risk.</li>
+<li><b>SRISK</b>: the capital an institution would need to raise to function normally after a severe market decline. It combines size, leverage and long-run MES.</li>
+<li><b>Illiquidity risk</b>: forced sales in thin markets push prices down, which hits other holders of the same assets and creates a spiral. The Amihud measure (average |return| ÷ dollar volume) is a common proxy for market illiquidity.</li>
+</ul>
+<div class="lab">
+<h3>CoVaR and MES with normal returns</h3>
+<p class="note">Institution and system returns are standard normal with correlation ρ. Values are in standard deviations of system return.</p>
+<div class="row"><label for="cr">Correlation ρ</label><input id="cr" type="range" min="0" max="0.95" step="0.05" value="0.6"><output id="crO"></output></div>
+<div class="row"><label for="cq">Tail probability q</label><input id="cq" type="range" min="1" max="10" step="1" value="5"><output id="cqO"></output></div>
+<div class="stat"><div><small>System VaR</small><b id="svar"></b></div><div><small>CoVaR (firm distressed)</small><b id="covar"></b></div><div><small>ΔCoVaR</small><b id="dcovar"></b></div><div><small>MES</small><b id="mes"></b></div></div>
+</div>
+<div class="lab">
+<h3>SRISK calculator</h3>
+<p class="note">SRISK = k·Debt − (1 − k)·Equity·(1 − LRMES), with prudential ratio k = 8%. Positive means a capital shortfall.</p>
+<div class="row"><label for="sd">Debt ($bn)</label><input id="sd" type="range" min="50" max="1000" step="10" value="400"><output id="sdO"></output></div>
+<div class="row"><label for="se">Market equity ($bn)</label><input id="se" type="range" min="5" max="150" step="1" value="30"><output id="seO"></output></div>
+<div class="row"><label for="sl">LRMES (6-month crash loss)</label><input id="sl" type="range" min="10" max="70" step="1" value="40"><output id="slO"></output></div>
+<div class="stat"><div><small>SRISK ($bn)</small><b id="srisk"></b></div><div><small>Leverage (D/E)</small><b id="lev"></b></div></div>
+<p id="sriskMsg" class="note"></p>
+</div>
+<div class="quiz" data-l="2"></div>
+</section>
+
+<!-- LESSON 4 -->
+<section>
+<h2>Lesson 4: Systemic risk meets machine learning</h2>
+<p class="lead">Machine learning can pick up nonlinear patterns and process huge, messy data sets. But crises are rare, so the main challenge is trading off missed crises against false alarms.</p>
+<h3>Where ML helps</h3>
+<ul>
+<li><b>Early-warning classifiers</b>: logistic regression, random forests and gradient boosting predict whether a crisis will start within a horizon, often finding nonlinear threshold effects.</li>
+<li><b>Dimension reduction</b>: sparse PCA, autoencoders and clustering compress hundreds of series into a few risk factors.</li>
+<li><b>Text and news</b>: natural language processing turns central bank reports and news flow into sentiment indices.</li>
+<li><b>Network inference</b>: LASSO-based methods estimate connections from return data when exposures are not observable.</li>
+</ul>
+<h3>Where it struggles</h3>
+<ul>
+<li><b>Few events</b>: there are only a handful of crises, so flexible models overfit easily.</li>
+<li><b>Regime change</b>: the next crisis rarely looks like the last, which weakens out-of-sample performance.</li>
+<li><b>Interpretability</b>: regulators need to know why a model raises an alarm. Tools like SHAP values and partial dependence plots help.</li>
+<li><b>Evaluation</b>: accuracy is misleading with rare events. Use recall, precision and AUC, with time-based validation.</li>
+</ul>
+<div class="lab">
+<h3>Alarm threshold trade-off</h3>
+<p class="note">A simulated early-warning model scores 2,000 quarters, of which 100 (5%) precede a crisis. Raising the threshold gives fewer false alarms but misses more crises.</p>
+<div class="row"><label for="th">Alarm threshold</label><input id="th" type="range" min="0.1" max="0.9" step="0.01" value="0.5"><output id="thO"></output></div>
+<div class="row"><label for="lossRatio">Cost of a missed crisis ÷ false alarm</label><input id="lossRatio" type="range" min="1" max="50" value="10"><output id="lrO"></output></div>
+<svg id="dist" viewBox="0 0 400 120" role="img" aria-label="Score distributions" style="width:100%;max-width:560px"></svg>
+<div class="stat"><div><small>Recall</small><b id="rec"></b></div><div><small>Precision</small><b id="prec"></b></div><div><small>Missed crises</small><b id="fn"></b></div><div><small>False alarms</small><b id="fp"></b></div><div><small>Total cost</small><b id="cost"></b></div></div>
+<p class="note">Try the lowest-cost threshold at different cost ratios. Regulators who fear a missed crisis accept many false alarms.</p>
+</div>
+<div class="quiz" data-l="3"></div>
+</section>
+
+</main>
+</div>
+
+<script>
+const $=id=>document.getElementById(id),clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+/* ---------- tabs ---------- */
+const secs=[...document.querySelectorAll('main section')],btns=[...document.querySelectorAll('nav button')];
+function show(i){secs.forEach((s,j)=>s.classList.toggle('on',i===j));btns.forEach((b,j)=>b.setAttribute('aria-current',i===j));try{localStorage.setItem('sr_tab',i)}catch(e){}scrollTo(0,0)}
+btns.forEach((b,i)=>b.onclick=()=>show(i));
+let start=0;try{start=+localStorage.getItem('sr_tab')||0}catch(e){}
+show(start);
+/* ---------- lesson 1 ---------- */
+const ind=[
+ {n:'Credit-to-GDP gap (pp)',min:-10,max:25,v:4,w:.3,f:x=>clamp(x/10)},
+ {n:'Yield curve 10y−2y (pp)',min:-2,max:3,v:1,step:.1,w:.2,f:x=>clamp((1-x)/2.5)},
+ {n:'Unemployment change (pp)',min:-1,max:4,v:0,step:.1,w:.15,f:x=>clamp((x+.5)/3)},
+ {n:'House price growth (%)',min:-10,max:25,v:5,w:.15,f:x=>clamp(x/15)},
+ {n:'VIX',min:10,max:60,v:16,w:.2,f:x=>clamp((x-12)/38)}];
+$('macro').innerHTML=ind.map((d,i)=>`<div class="row"><label for="m${i}">${d.n}</label><input id="m${i}" type="range" min="${d.min}" max="${d.max}" step="${d.step||1}" value="${d.v}"><output id="mo${i}"></output></div>`).join('');
+function macro(){let s=0,h='';ind.forEach((d,i)=>{const v=+$('m'+i).value,r=d.f(v);$('mo'+i).textContent=v;s+=r*d.w;
+ h+=`<div style="font-size:.85rem">${d.n}</div><div class="meter"><i style="width:${r*100}%;background:${r>.66?'var(--alert)':r>.33?'var(--warn)':'var(--ok)'}"></i></div>`});
+ s=Math.round(s*100);$('mScore').textContent=s;$('mBars').innerHTML=h;
+ const c=s>=55?'var(--alert)':s>=33?'var(--warn)':'var(--ok)';$('mBar').style.width=s+'%';$('mBar').style.background=c;
+ $('mLabel').textContent=s>=55?'Stressed: fragility is high, so consider tightening buffers.':s>=33?'Elevated: watch credit and asset prices closely.':'Calm: no strong warning signals.';$('mLabel').style.color=c}
+ind.forEach((d,i)=>$('m'+i).oninput=macro);macro();
+/* ---------- lesson 2: network ---------- */
+const N=6,edges=[[0,1,6],[1,2,6],[2,3,6],[3,4,6],[4,5,6],[5,0,6],[0,3,4],[2,5,4],[1,4,3]];
+const pos=[...Array(N)].map((_,i)=>[150+105*Math.cos(i*2*Math.PI/N-Math.PI/2),145+105*Math.sin(i*2*Math.PI/N-Math.PI/2)]);
+let failed=new Set(),rounds=0;
+function drawNet(){
+ let h='<defs><marker id="ah" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0L8,4L0,8z" fill="#7d949c"/></marker></defs>';
+ edges.forEach(([a,b,w])=>{const[x1,y1]=pos[a],[x2,y2]=pos[b],dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy),ux=dx/L,uy=dy/L;
+  h+=`<line x1="${x1+ux*22}" y1="${y1+uy*22}" x2="${x2-ux*26}" y2="${y2-uy*26}" stroke="#8b97ad" stroke-width="1" marker-end="url(#ah)"/><text x="${(x1+x2)/2+uy*9}" y="${(y1+y2)/2-ux*9}" text-anchor="middle" style="font-size:10px;fill:var(--muted)">${w}</text>`});
+ pos.forEach(([x,y],i)=>{const f=failed.has(i);
+  h+=`<g tabindex="0" role="button" aria-label="Bank ${i+1}${f?' failed':''}" style="cursor:pointer" data-i="${i}"><circle cx="${x}" cy="${y}" r="20" fill="${f?'var(--alert)':'var(--accent)'}" stroke="var(--brass)" stroke-width="1.5"/><text x="${x}" y="${y+4}" text-anchor="middle" style="fill:#fff;font-size:11px">B${i+1}</text></g>`});
+ $('net').innerHTML=h;$('nFail').textContent=failed.size;$('nRound').textContent=rounds;
+ $('capO').textContent=$('cap').value;
+ $('net').querySelectorAll('g').forEach(g=>{const go=()=>shock(+g.dataset.i);g.onclick=go;g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}}})}
+function shock(i){failed=new Set([i]);rounds=0;const cap=+$('cap').value;let ch=true;
+ while(ch){ch=false;const nf=[];for(let k=0;k<N;k++){if(failed.has(k))continue;
+  const loss=edges.filter(e=>e[0]===k&&failed.has(e[1])).reduce((s,e)=>s+e[2],0);if(loss>=cap)nf.push(k)}
+  if(nf.length){nf.forEach(k=>failed.add(k));rounds++;ch=true}}
+ $('netMsg').textContent=failed.size===1?'The shock was absorbed. Lenders held enough capital.':failed.size===N?'Complete collapse: the whole network failed.':`Cascade: ${failed.size} of ${N} banks failed.`;drawNet()}
+$('cap').oninput=()=>{failed.size?shock([...failed][0]):drawNet()};
+$('netReset').onclick=()=>{failed=new Set();rounds=0;$('netMsg').textContent='';drawNet()};drawNet();
+/* PCA */
+function pca(){const r=+$('rho').value,n=10,l1=1+(n-1)*r,lo=1-r;$('rhoO').textContent=r.toFixed(2);
+ const sh=[l1/n,...Array(9).fill(lo/n)];let h='';
+ sh.forEach((s,i)=>{const ht=s*110;h+=`<rect x="${12+i*38}" y="${118-ht}" width="28" height="${ht}" fill="${i?'var(--muted)':'var(--alert)'}" rx="3"/><text x="${26+i*38}" y="128" text-anchor="middle" style="font-size:9px">PC${i+1}</text>`});
+ $('pca').innerHTML=h;$('pc1').textContent=(sh[0]*100).toFixed(0)+'%';
+ $('effN').textContent=(n*n/(l1**2+9*lo**2)).toFixed(1)+' of 10'}
+$('rho').oninput=pca;pca();
+/* ---------- lesson 3 ---------- */
+function zq(p){const t=Math.sqrt(-2*Math.log(p));return-(t-(2.515517+.802853*t+.010328*t*t)/(1+1.432788*t+.189269*t*t+.001308*t**3))}
+const phi=z=>Math.exp(-z*z/2)/Math.sqrt(2*Math.PI);
+function covar(){const r=+$('cr').value,q=+$('cq').value/100,z=zq(q);
+ $('crO').textContent=r.toFixed(2);$('cqO').textContent=$('cq').value+'%';
+ const co=r*z+Math.sqrt(1-r*r)*z;
+ $('svar').textContent=z.toFixed(2);$('covar').textContent=co.toFixed(2);$('dcovar').textContent=(co-z).toFixed(2);
+ $('mes').textContent=(-r*phi(z)/q).toFixed(2)}
+['cr','cq'].forEach(i=>$(i).oninput=covar);covar();
+function srisk(){const D=+$('sd').value,E=+$('se').value,L=+$('sl').value/100,k=.08;
+ $('sdO').textContent=D;$('seO').textContent=E;$('slO').textContent=Math.round(L*100)+'%';
+ const s=k*D-(1-k)*E*(1-L);$('srisk').textContent=s.toFixed(1);$('srisk').style.color=s>0?'var(--alert)':'var(--ok)';
+ $('lev').textContent=(D/E).toFixed(1)+'x';
+ $('sriskMsg').textContent=s>0?`In a crash this firm would need about $${s.toFixed(0)}bn of new capital, which it would struggle to raise just when everyone else needs it too.`:'The firm holds enough equity to absorb the crash scenario.'}
+['sd','se','sl'].forEach(i=>$(i).oninput=srisk);srisk();
+/* ---------- lesson 4 ---------- */
+let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const gauss=()=>Math.sqrt(-2*Math.log(rnd()))*Math.cos(2*Math.PI*rnd());
+const pos4=[...Array(100)].map(()=>clamp(.68+.17*gauss(),0,1)),neg4=[...Array(1900)].map(()=>clamp(.35+.15*gauss(),0,1));
+function ml(){const t=+$('th').value,c=+$('lossRatio').value;
+ $('thO').textContent=t.toFixed(2);$('lrO').textContent=c+'×';
+ const tp=pos4.filter(x=>x>=t).length,fn=100-tp,fp=neg4.filter(x=>x>=t).length;
+ $('rec').textContent=(tp/100*100).toFixed(0)+'%';$('prec').textContent=tp+fp?(tp/(tp+fp)*100).toFixed(0)+'%':'n/a';
+ $('fn').textContent=fn;$('fp').textContent=fp;$('cost').textContent=fn*c+fp;
+ const bins=20,hp=Array(bins).fill(0),hn=Array(bins).fill(0);
+ pos4.forEach(x=>hp[Math.min(bins-1,x*bins|0)]++);neg4.forEach(x=>hn[Math.min(bins-1,x*bins|0)]++);
+ let h='';const w=380/bins;
+ for(let i=0;i<bins;i++){const a=hn[i]/1900*100*1.2,b=hp[i]/100*100*1.2;
+  h+=`<rect x="${10+i*w}" y="${100-a}" width="${w-1}" height="${a}" fill="var(--muted)" opacity=".6"/><rect x="${10+i*w}" y="${100-b}" width="${w-1}" height="${b}" fill="var(--alert)" opacity=".6"/>`}
+ h+=`<line x1="${10+t*380}" x2="${10+t*380}" y1="0" y2="102" stroke="var(--ink)" stroke-width="2"/><text x="10" y="116">Score 0</text><text x="390" y="116" text-anchor="end">1</text>`;
+ $('dist').innerHTML=h}
+['th','lossRatio'].forEach(i=>$(i).oninput=ml);ml();
+/* ---------- quizzes ---------- */
+const Q=[
+[{q:'Which indicator does the Basel countercyclical capital buffer rely on?',o:['VIX','Credit-to-GDP gap','Yield curve slope','Unemployment rate'],a:1,e:'The credit-to-GDP gap measures credit relative to trend and guides the buffer.'},
+ {q:'An inverted yield curve most often signals…',o:['Rising inflation expectations','Higher recession risk','Lower volatility','Falling unemployment'],a:1,e:'Short rates above long rates have historically preceded recessions.'},
+ {q:'Why combine slow macro indicators with market-based ones like the VIX?',o:['Macro data is revised less','Macro signals build vulnerability while market signals show stress as it starts','VIX predicts crises years ahead','They always agree'],a:1,e:'Each captures a different phase of the crisis cycle.'}],
+[{q:'In the contagion simulator, what happens when capital buffers rise?',o:['Cascades get larger','Cascades get smaller or stop','Nothing changes','Only the first bank is affected'],a:1,e:'A failure spreads only when a lender’s loss exceeds its capital.'},
+ {q:'A rising absorption ratio means…',o:['Assets are moving more independently','A larger share of variance is explained by a few factors, so diversification weakens','Volatility is falling','The network is shrinking'],a:1,e:'High absorption means the system is tightly coupled and fragile.'},
+ {q:'If ten assets all have correlation 0.9, roughly what share of variance does PC1 explain?',o:['10%','50%','91%','100%'],a:2,e:'(1 + 9×0.9)/10 = 0.91.'}],
+[{q:'ΔCoVaR measures an institution’s…',o:['Exposure to a market crash','Contribution to system-wide risk','Liquidity','Leverage ratio'],a:1,e:'It is the change in system VaR when the firm moves from its median state to distress.'},
+ {q:'MES is defined as an institution’s expected loss…',o:['On its worst days','When the system is in its worst tail','Over 10 years','When liquidity falls'],a:1,e:'MES captures exposure to systemic events.'},
+ {q:'Which raises SRISK, all else equal?',o:['Higher equity value','Higher leverage','Lower debt','Lower LRMES'],a:1,e:'More debt relative to equity increases the expected capital shortfall.'}],
+[{q:'Why is accuracy a poor metric for crisis prediction?',o:['Crises are frequent','A model that never predicts a crisis would still score very high','Accuracy cannot be computed','Models are always perfect'],a:1,e:'With 5% crisis frequency, always saying “no crisis” is 95% accurate and useless.'},
+ {q:'Raising the alarm threshold typically…',o:['Increases recall and false alarms','Reduces false alarms but misses more crises','Has no effect','Improves both'],a:1,e:'It trades recall for precision.'},
+ {q:'The main reason flexible ML models struggle with systemic risk is…',o:['Too much data','Very few crisis episodes, so they overfit','Lack of computing power','Crises are perfectly predictable'],a:1,e:'Rare events give little training signal and regimes change.'}]];
+document.querySelectorAll('.quiz').forEach(el=>{const l=+el.dataset.l;let h='<h3>Check your understanding</h3>',n=0;
+ Q[l].forEach((x,i)=>{h+=`<div class="q" data-i="${i}"><p>${x.q}</p>${x.o.map((o,j)=>`<label><input type="radio" name="q${l}_${i}" value="${j}"> ${o}</label>`).join('')}<div class="fb"></div></div>`});
+ el.innerHTML=h;
+ el.querySelectorAll('.q').forEach(qe=>qe.onchange=e=>{const x=Q[l][+qe.dataset.i],ok=+e.target.value===x.a,fb=qe.querySelector('.fb');
+  fb.className='fb '+(ok?'good':'bad');fb.textContent=(ok?'Correct. ':'Not quite. ')+x.e;qe.dataset.ok=ok?1:0;
+  if(el.querySelectorAll('.q[data-ok="1"]').length===Q[l].length)btns[l].classList.add('done')})});
+</script>
+</body>
+</html>
